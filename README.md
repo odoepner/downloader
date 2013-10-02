@@ -1,1 +1,4 @@
-Downloads files from URLs (requires JDK 7)
+Downloads files from URLs
+
+- Requires JDK 7
+- Build it using Maven
