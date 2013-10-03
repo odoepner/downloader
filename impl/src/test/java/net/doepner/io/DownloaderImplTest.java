@@ -1,10 +1,10 @@
 package net.doepner.io;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,7 +20,7 @@ public class DownloaderImplTest {
 
     @Test
     public void test() throws IOException {
-        downloader.add("http://oliver.doepner.net");
+        downloader.add("http://oliver.doepner.net/docs/Resume-Oliver-Doepner.pdf");
         downloader.add("http://google.com");
 
         int i = 0;

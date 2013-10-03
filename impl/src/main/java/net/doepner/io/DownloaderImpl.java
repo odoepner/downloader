@@ -19,6 +19,7 @@ import java.util.Set;
 public class DownloaderImpl implements Downloader {
 
     private final Path downloadDir;
+    private final UrlHelper urlHelper = new UrlHelper();
 
     private final Set<URL> urls = new HashSet<>();
 
@@ -42,22 +43,15 @@ public class DownloaderImpl implements Downloader {
 
     private Path download(URL url) throws IOException {
         final URLConnection c = url.openConnection();
-
         final ReadableByteChannel rbc = Channels.newChannel(c.getInputStream());
 
-        final File file = deriveFrom(url, c.getContentType()).toFile();
+        final String filename = urlHelper.getFilename(url, c.getContentType());
+        final File file = downloadDir.resolve(filename).toFile();
+
         try (final FileOutputStream fos = new FileOutputStream(file)) {
             final FileChannel channel = fos.getChannel();
             channel.transferFrom(rbc, 0, Long.MAX_VALUE);
         }
         return file.toPath();
-    }
-
-    private Path deriveFrom(URL url, String contentType) {
-        final int extStart = contentType.indexOf('/') + 1;
-        final int extEnd = contentType.contains(";") ? contentType.indexOf(';') : contentType.length();
-        final String ext = contentType.substring(extStart, extEnd);
-        System.out.println(ext);
-        return downloadDir.resolve(String.valueOf(url.hashCode()) + '.' + ext);
     }
 }
