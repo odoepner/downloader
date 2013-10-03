@@ -42,9 +42,10 @@ public class DownloaderImpl implements Downloader {
 
     private Path download(URL url) throws IOException {
         final URLConnection c = url.openConnection();
+
         final ReadableByteChannel rbc = Channels.newChannel(c.getInputStream());
 
-        final File file = deriveFrom(url).toFile();
+        final File file = deriveFrom(url, c.getContentType()).toFile();
         try (final FileOutputStream fos = new FileOutputStream(file)) {
             final FileChannel channel = fos.getChannel();
             channel.transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -52,7 +53,11 @@ public class DownloaderImpl implements Downloader {
         return file.toPath();
     }
 
-    private Path deriveFrom(URL url) {
-        return downloadDir.resolve(String.valueOf(url.hashCode()));
+    private Path deriveFrom(URL url, String contentType) {
+        final int extStart = contentType.indexOf('/') + 1;
+        final int extEnd = contentType.contains(";") ? contentType.indexOf(';') : contentType.length();
+        final String ext = contentType.substring(extStart, extEnd);
+        System.out.println(ext);
+        return downloadDir.resolve(String.valueOf(url.hashCode()) + '.' + ext);
     }
 }

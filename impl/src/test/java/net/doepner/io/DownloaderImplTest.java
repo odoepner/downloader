@@ -3,10 +3,10 @@ package net.doepner.io;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -22,16 +22,13 @@ public class DownloaderImplTest {
     public void test() throws IOException {
         downloader.add("http://oliver.doepner.net");
         downloader.add("http://google.com");
-        final Iterable<Path> results = downloader.download();
 
-        final Iterator<Path> pathIterator = results.iterator();
-        checkFileExists(pathIterator);
-        checkFileExists(pathIterator);
+        int i = 0;
+        for (Path path : downloader.download()) {
+            assertTrue("Downloaded file should exist!", path.toFile().exists());
+            i++;
+        }
+        assertEquals("Number of results", 2, i);
     }
 
-    private void checkFileExists(Iterator<Path> iterator) {
-        assertTrue(iterator.hasNext());
-        final Path path = iterator.next();
-        assertTrue("Downloaded file should exist!", path.toFile().exists());
-    }
 }
