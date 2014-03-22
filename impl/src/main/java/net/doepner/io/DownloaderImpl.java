@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -49,8 +48,7 @@ public class DownloaderImpl implements Downloader {
         final File file = downloadDir.resolve(filename).toFile();
 
         try (final FileOutputStream fos = new FileOutputStream(file)) {
-            final FileChannel channel = fos.getChannel();
-            channel.transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         }
         return file.toPath();
     }
